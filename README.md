@@ -1,21 +1,19 @@
 # Exp.no: 10   IMPLEMENTATION OF SARIMA MODEL
-### Date: 10.05.25
+## Date: 10.05.25
 
-### AIM:
+## AIM:
 To implement SARIMA model using python.
-### ALGORITHM:
+## ALGORITHM:
 1. Explore the dataset
 2. Check for stationarity of time series
 3. Determine SARIMA models parameters p, q
 4. Fit the SARIMA model
 5. Make time series predictions and Auto-fit the SARIMA model
 6. Evaluate model predictions
-### PROGRAM:
-
+## PROGRAM:
+### Name : Mukesh Kumar S
+### Register Number : 212223240099
 ```
-# Name : Mukesh Kumar S
-# Reg No : 212223240099
-
 import pandas as pd
 import numpy as np
 from statsmodels.tsa.statespace.sarimax import SARIMAX
@@ -24,16 +22,15 @@ import matplotlib.pyplot as plt
 import warnings
 warnings.filterwarnings("ignore")
 
-data = pd.read_csv('weather.csv')
+data = pd.read_csv('AirPassengers.csv')
 data.head()
-data['Time'] = pd.date_range(start='2012-01-01', periods=len(data), freq='M')
-data.set_index('date', inplace=True)
-time_series = data['wind']
+data.set_index('Month', inplace=True)
+time_series = data['#Passengers']
 plt.figure(figsize=(10, 6))
 plt.plot(time_series)
-plt.title('Wind Time Series Plot')
-plt.xlabel('Date')
-plt.ylabel('Wind Level')
+plt.title('Passengers Time Series Plot')
+plt.xlabel('Month')
+plt.ylabel('Passengers')
 plt.show()
 def test_stationarity(timeseries):
     result = adfuller(timeseries)
@@ -50,17 +47,16 @@ test_stationarity(time_series)
 time_series_diff = time_series.diff().dropna()
 print("\nAfter Differencing:")
 test_stationarity(time_series_diff)
-# Set initial SARIMA parameters (p, d, q, P, D, Q, m)
+
 p, d, q = 1, 1, 1
-P, D, Q, m = 1, 1, 1, 12  # m = 12 for monthly seasonality if applicable
+P, D, Q, m = 1, 1, 1, 12 
 model = SARIMAX(time_series, order=(p, d, q), seasonal_order=(P, D, Q, m), enforce_stationarity=False, enforce_invertibility=False)
 sarima_fit = model.fit(disp=False)
 print(sarima_fit.summary())
-forecast_steps = 12  # Number of periods to forecast
+forecast_steps = 12 
 forecast = sarima_fit.get_forecast(steps=forecast_steps)
 forecast_ci = forecast.conf_int()
 
-# Ensure time series index is datetime and timezone-naive
 time_series.index = pd.to_datetime(time_series.index).tz_localize(None)
 forecast.predicted_mean.index = pd.to_datetime(forecast.predicted_mean.index).tz_localize(None)
 forecast_ci.index = pd.to_datetime(forecast_ci.index).tz_localize(None)
@@ -72,9 +68,9 @@ plt.plot(forecast.predicted_mean, label='Forecast', color='red')
 plt.fill_between(forecast_ci.index,
                  forecast_ci.iloc[:, 0],
                  forecast_ci.iloc[:, 1], color='pink', alpha=0.3)
-plt.title('SARIMA Forecast of Wind Levels')
-plt.xlabel('Date')
-plt.ylabel('Wind Level')
+plt.title('SARIMA Forecast of Passengers')
+plt.xlabel('Month')
+plt.ylabel('Passengers')
 plt.legend()
 plt.show()
 
@@ -89,19 +85,19 @@ print('Mean Absolute Error:', mae)
 
 #### Time Series Plot:
 
-![download](https://github.com/user-attachments/assets/b5d934e9-3e4b-400a-9948-0480d25814de)
+![Output 1](https://github.com/user-attachments/assets/d9bed813-2eb1-4e32-862f-01f92257aa1e)
 
 #### After Differencing:
 
-![image](https://github.com/user-attachments/assets/b3d6e4f5-336d-4aea-b990-90539a5a0ed2)
+![difference](https://github.com/user-attachments/assets/44ef9e06-899e-4a43-833e-d8e19ed216e5)
 
 #### SARIMA Forecast:
 
-![download](https://github.com/user-attachments/assets/3b4fc5f4-4934-4f04-b4c4-a5d015e114a3)
+![Output2](https://github.com/user-attachments/assets/90b87940-2ef5-4b17-b6d4-87bd3360c2a4)
 
 #### Mean Absolute Error:
 
-![image](https://github.com/user-attachments/assets/215ce5e4-1382-422d-b5b5-cde4aeff3a3e)
+![mean](https://github.com/user-attachments/assets/ed8f4bf1-1ed8-4d2c-b7a0-f1617f8031fb)
 
 ### RESULT:
 Thus the program run successfully based on the SARIMA model.
